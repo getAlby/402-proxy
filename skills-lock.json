@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "alby-bitcoin-payments-agent-skill": {
+      "source": "getAlby/alby-agent-skill",
+      "sourceType": "github",
+      "computedHash": "31c7ff3732c08d4138d51723859b423da037c97b78be732519d5b782b83d8403"
+    }
+  }
+}
