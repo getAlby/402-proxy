@@ -1,7 +1,13 @@
 import Fastify from "fastify";
 import { NWCClient } from "@getalby/sdk/nwc";
 import { randomBytes } from "node:crypto";
-import { issueMacaroon, verifyMacaroon, verifyPreimage, parseL402Authorization, buildL402Challenge, L402_PREFIX } from "./l402.js";
+import {
+  issueL402Macaroon,
+  makeL402AuthenticateHeader,
+  parseL402Authorization,
+  validatePreimage,
+  verifyL402Macaroon,
+} from "@getalby/lightning-tools";
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 const MACAROON_SECRET = randomBytes(32).toString("hex");
@@ -21,6 +27,8 @@ const HOP_BY_HOP_HEADERS = new Set([
   "upgrade",
 ]);
 
+type ProxyMacaroonPayload = { url: string };
+
 // --- Fastify app ---
 
 const app = Fastify({ logger: true });
@@ -33,7 +41,7 @@ app.all("/", async (request, reply) => {
   const authHeader = request.headers["authorization"];
 
   // --- Authenticated path ---
-  if (authHeader?.startsWith(L402_PREFIX)) {
+  if (authHeader?.startsWith("L402")) {
     request.log.info("L402 Authorization header present — verifying");
 
     const parsed = parseL402Authorization(authHeader);
@@ -47,9 +55,12 @@ app.all("/", async (request, reply) => {
       });
     }
 
-    const { macaroon, preimage } = parsed;
+    const { token, preimage } = parsed;
 
-    const payload = verifyMacaroon(MACAROON_SECRET, macaroon);
+    const payload = await verifyL402Macaroon<ProxyMacaroonPayload>(
+      MACAROON_SECRET,
+      token,
+    );
     if (!payload) {
       request.log.warn(
         "Macaroon verification failed — invalid signature or expired",
@@ -57,7 +68,7 @@ app.all("/", async (request, reply) => {
       return reply.status(401).send({ error: "Invalid or expired macaroon" });
     }
 
-    if (!verifyPreimage(preimage, payload.paymentHash)) {
+    if (!validatePreimage(preimage, payload.paymentHash)) {
       request.log.warn(
         { paymentHash: payload.paymentHash },
         "Preimage verification failed",
@@ -168,16 +179,20 @@ app.all("/", async (request, reply) => {
       { paymentHash: tx.payment_hash },
       "Invoice created — returning 402",
     );
-    const macaroon = issueMacaroon(
+    const macaroon = await issueL402Macaroon<ProxyMacaroonPayload>(
       MACAROON_SECRET,
       tx.payment_hash,
-      upstreamUrl.toString(),
-      amountSats,
+      { url: upstreamUrl.toString() },
     );
+
+    const wwwAuthHeader = await makeL402AuthenticateHeader({
+      token: macaroon,
+      invoice: tx.invoice,
+    });
 
     return reply
       .status(402)
-      .header("WWW-Authenticate", buildL402Challenge(macaroon, tx.invoice))
+      .header("WWW-Authenticate", wwwAuthHeader)
       .send({ error: "Payment required" });
   } catch (err) {
     request.log.error({ err }, "NWC makeInvoice failed");

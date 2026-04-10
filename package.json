@@ -2,7 +2,9 @@
   "name": "l402-proxy",
   "version": "1.0.0",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsc",
@@ -10,6 +12,7 @@
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
+    "@getalby/lightning-tools": "^8.1.0",
     "@getalby/sdk": "^7.0.0",
     "fastify": "^5.0.0"
   },
