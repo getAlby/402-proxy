@@ -1,4 +1,5 @@
 import Fastify from "fastify";
+import cors from "@fastify/cors";
 import { NWCClient } from "@getalby/sdk/nwc";
 import { randomBytes } from "node:crypto";
 import {
@@ -32,6 +33,8 @@ type ProxyMacaroonPayload = { url: string };
 // --- Fastify app ---
 
 const app = Fastify({ logger: true });
+
+await app.register(cors, { origin: true });
 
 app.addContentTypeParser("*", { parseAs: "buffer" }, (_req, body, done) =>
   done(null, body),

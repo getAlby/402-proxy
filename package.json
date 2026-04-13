@@ -12,11 +12,13 @@
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
+    "@fastify/cors": "^11.2.0",
     "@getalby/lightning-tools": "^8.1.0",
     "@getalby/sdk": "^7.0.0",
     "fastify": "^5.0.0"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10",
     "@types/node": "^22.0.0",
     "tsx": "^4.0.0",
     "typescript": "^5.0.0"
