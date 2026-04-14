@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for l402-proxy on 2026-04-13T14:58:39+07:00
+# fly.toml app configuration file generated for 402-proxy on 2026-04-14T15:50:54+07:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'l402-proxy'
+app = '402-proxy'
 primary_region = 'fra'
 
 [build]
