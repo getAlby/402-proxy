@@ -102,7 +102,12 @@ app.all("/", async (request, reply) => {
     try {
       upstreamRes = await fetch(payload.url, {
         method: request.method,
-        headers: filteredHeaders,
+        // Force uncompressed upstream response — the proxy buffers and re-sends
+        // the body, so if the upstream returns a compressed encoding the browser
+        // will never see the content-encoding header (we strip it below) and
+        // will render raw binary. Node's fetch decompression is not reliable for
+        // all encodings (notably brotli) across all environments.
+        headers: { ...filteredHeaders, "accept-encoding": "identity" },
         body: hasBody ? new Uint8Array(request.body as Buffer) : undefined,
       });
     } catch (err) {
@@ -121,8 +126,8 @@ app.all("/", async (request, reply) => {
       // Skip these headers — we buffer and re-send the body, so:
       // - content-length: Fastify recomputes it from the buffer
       // - transfer-encoding: would conflict with the new content-length
-      // - content-encoding: Node's fetch auto-decompresses, so the buffer is
-      //   plain bytes; forwarding gzip/br/etc. would cause double-decompression
+      // - content-encoding: upstream is forced to identity encoding (see above),
+      //   so the buffer is always plain bytes; strip just in case
       if (
         k === "transfer-encoding" ||
         k === "content-length" ||
