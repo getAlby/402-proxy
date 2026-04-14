@@ -34,7 +34,7 @@ type ProxyMacaroonPayload = { url: string };
 
 const app = Fastify({ logger: true });
 
-await app.register(cors, { origin: true });
+await app.register(cors, { origin: true, exposedHeaders: ["WWW-Authenticate"] });
 
 app.addContentTypeParser("*", { parseAs: "buffer" }, (_req, body, done) =>
   done(null, body),
