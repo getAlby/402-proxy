@@ -1,5 +1,7 @@
 # 402 Proxy
 
+**Try it now: <https://402-proxy.albylabs.com>**
+
 A minimal HTTP proxy that gates upstream API access behind Lightning payments. It supports two protocols:
 
 - **[L402](https://docs.lightning.engineering/the-lightning-network/l402)** — uses macaroons and `WWW-Authenticate` / `Authorization` headers
