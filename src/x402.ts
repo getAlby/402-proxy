@@ -279,10 +279,13 @@ export async function handleX402(
     inputSchema: {
       properties: {
         url: { type: "string", format: "uri", description: "Upstream URL to proxy" },
-        nwc_url: { type: "string", description: "Nostr Wallet Connect URL" },
+        nwc_url: { type: "string", description: "Nostr Wallet Connect URL (NIP-47) used to create the Lightning invoice" },
         amount: { type: "integer", minimum: 1, description: "Amount in satoshis" },
       },
       required: ["url", "nwc_url", "amount"],
+    },
+    output: {
+      schema: { description: "The upstream HTTP response body, forwarded verbatim after payment is verified" },
     },
   });
 
