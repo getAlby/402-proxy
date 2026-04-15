@@ -286,6 +286,7 @@ export async function handleX402(
     },
     output: {
       schema: { description: "The upstream HTTP response body, forwarded verbatim after payment is verified" },
+      example: "Upstream response body (format depends on the proxied URL)",
     },
   });
 
@@ -296,7 +297,7 @@ export async function handleX402(
     amount: String(amountMsats),
     payTo: "anonymous",
     maxTimeoutSeconds: 300,
-    extra: { merchantId, url: urlStr, sig, bazaar },
+    extra: { merchantId, url: urlStr, sig },
   };
 
   let enhanced: PaymentRequirements;
@@ -317,6 +318,7 @@ export async function handleX402(
     x402Version: 2,
     accepts: [enhanced],
     resource: { url: request.url, description: "Proxy access" },
+    extensions: { bazaar },
   };
 
   request.log.info(
