@@ -14,6 +14,7 @@ import type {
   Price,
   AssetAmount,
 } from "@x402/core/types";
+import { declareDiscoveryExtension } from "@x402/extensions/bazaar";
 import { MACAROON_SECRET } from "./l402.js";
 import { proxyUpstream } from "./proxy.js";
 
@@ -122,13 +123,11 @@ class LightningSchemeNetworkServer implements SchemeNetworkServer {
       ...requirements,
       payTo: requirements.payTo || "anonymous",
       extra: {
+        // Spread first so any extension fields (e.g. bazaar discovery) are
+        // preserved, then override with the fields we explicitly manage.
+        ...extra,
         paymentMethod: "lightning",
         invoice,
-        // Preserve these so the client sends them back in payment-signature,
-        // allowing us to verify the HMAC and find the upstream URL.
-        url: extra.url,
-        sig: extra.sig,
-        merchantId,
       },
     };
   }
@@ -275,6 +274,18 @@ export async function handleX402(
 
   const sig = signExtra(urlStr, amountMsats, merchantId);
 
+  const { bazaar } = declareDiscoveryExtension({
+    input: { url: urlStr, nwc_url, amount: amountSats },
+    inputSchema: {
+      properties: {
+        url: { type: "string", format: "uri", description: "Upstream URL to proxy" },
+        nwc_url: { type: "string", description: "Nostr Wallet Connect URL" },
+        amount: { type: "integer", minimum: 1, description: "Amount in satoshis" },
+      },
+      required: ["url", "nwc_url", "amount"],
+    },
+  });
+
   const baseRequirements: PaymentRequirements = {
     scheme: "exact",
     network: BITCOIN_MAINNET,
@@ -282,7 +293,7 @@ export async function handleX402(
     amount: String(amountMsats),
     payTo: "anonymous",
     maxTimeoutSeconds: 300,
-    extra: { merchantId, url: urlStr, sig },
+    extra: { merchantId, url: urlStr, sig, bazaar },
   };
 
   let enhanced: PaymentRequirements;
