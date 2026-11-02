@@ -32,6 +32,11 @@ const CLOCK_SKEW_SECONDS = 60;
 const HTTP_PROFILE = "http:1";
 // Headers forwarded upstream that change how the body is interpreted.
 const BOUND_HEADERS = ["content-type"];
+// Public origin the x402 request binding covers. Configured rather than taken from the
+// request (fly.io terminates TLS, so the app only sees http + X-Forwarded-* headers).
+const PUBLIC_URL = (
+  process.env.PUBLIC_URL ?? "https://402-proxy.albylabs.com"
+).replace(/\/+$/, "");
 
 // --- Request binding (http:1) ---
 
@@ -58,9 +63,9 @@ function canonicalize(value: unknown): string {
   throw new Error(`unsupported binding value ${String(value)}`);
 }
 
-/** Public URL of the request, as the client sent it (fly.io terminates TLS, see trustProxy). */
+/** Public URL of the request, as the client sent it. */
 function getRequestUrl(request: FastifyRequest): string {
-  return `${request.protocol}://${request.host}${request.url}`;
+  return `${PUBLIC_URL}${request.url}`;
 }
 
 function computeRequestHash(request: FastifyRequest): string {

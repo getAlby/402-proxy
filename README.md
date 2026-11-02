@@ -25,6 +25,8 @@ yarn run build && yarn start   # production
 
 The server listens on port `3000` by default. Set `PORT` to override.
 
+Set `PUBLIC_URL` to the origin clients use to reach the proxy (default `https://402-proxy.albylabs.com`). The x402 invoice is bound to the full request URL, so this must match exactly, e.g. `PUBLIC_URL=http://localhost:3000` for local testing.
+
 ## Endpoints
 
 Both endpoints accept the same query parameters:

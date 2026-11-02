@@ -7,9 +7,7 @@ import { handleMPPDiscovery } from "./mpp-discovery.js";
 
 const PORT = parseInt(process.env.PORT ?? "3000", 10);
 
-// trustProxy: fly.io terminates TLS, so the public protocol/host come from
-// X-Forwarded-* (needed for the x402 request binding, which covers the URL).
-const app = Fastify({ logger: true, trustProxy: true });
+const app = Fastify({ logger: true });
 
 await app.register(cors, {
   origin: true,
