@@ -92,7 +92,7 @@ Pay the Lightning invoice. After payment you receive a **preimage** (32-byte hex
 
 #### Step 3 — Make the authenticated request
 
-Retry the **same** request (same URL, method, body and `content-type`) with a `Payment-Signature` header containing base64 `{ "x402Version": 2, "accepted": <the accepts entry>, "payload": { "preimage": "<preimage>" } }`. The proxy recomputes the request hash and checks the invoice against it. It checks that `SHA256(preimage) == paymentHash` and confirms via NWC (`lookup_invoice`, so the connection needs that permission as well as `make_invoice`) that the receiving wallet issued the invoice. The payment hash is then marked as used, so each payment works once. The proxy forwards the request upstream and returns a `PAYMENT-RESPONSE` header with the settlement result.
+Retry the **same** request (same URL, method, body and `content-type`) with a `Payment-Signature` header containing base64 `{ "x402Version": 2, "accepted": <the accepts entry>, "payload": { "preimage": "<preimage>" } }`. The proxy recomputes the request hash and checks the invoice against it. It checks that `SHA256(preimage) == paymentHash` and confirms via NWC `lookup_invoice` that the receiving wallet issued the invoice for this request and amount. The NWC connection needs `make_invoice`, `get_info` (for `payTo`) and `lookup_invoice` permissions. The payment hash is then marked as used, so each payment works once. The proxy forwards the request upstream and returns a `PAYMENT-RESPONSE` header with the settlement result.
 
 [`fetch402`](https://github.com/getAlby/js-lightning-tools) (v10+) does all of this automatically.
 
