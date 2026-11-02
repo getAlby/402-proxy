@@ -14,6 +14,9 @@ await app.register(cors, {
   exposedHeaders: ["WWW-Authenticate", "PAYMENT-REQUIRED", "PAYMENT-RESPONSE", "Payment-Receipt"],
 });
 
+// Keep every body as raw bytes: it is forwarded upstream as-is, and x402
+// binds the exact body bytes in the request hash.
+app.removeAllContentTypeParsers();
 app.addContentTypeParser("*", { parseAs: "buffer" }, (_req, body, done) =>
   done(null, body),
 );

@@ -3,6 +3,8 @@ import type { FastifyRequest, FastifyReply } from "fastify";
 export const HOP_BY_HOP_HEADERS = new Set([
   "host",
   "authorization",
+  // x402 payment proof (contains the preimage) — never disclose upstream
+  "payment-signature",
   "connection",
   "transfer-encoding",
   "keep-alive",

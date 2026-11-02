@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",
-    "@getalby/lightning-tools": "^8.1.0",
+    "@getalby/lightning-tools": "^10.0.0",
     "@getalby/sdk": "^7.0.0",
     "@x402/core": "2.10.0",
     "@x402/extensions": "2.10.0",
