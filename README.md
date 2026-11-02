@@ -5,7 +5,7 @@
 A minimal HTTP proxy that gates upstream API access behind Lightning payments. It supports three protocols:
 
 - **[L402](https://docs.lightning.engineering/the-lightning-network/l402)** — uses macaroons and `WWW-Authenticate` / `Authorization` headers
-- **[x402](https://x402.org)** — uses `PAYMENT-REQUIRED` / `Payment-Signature` headers, settled via the [Alby x402 facilitator](https://x402.albylabs.com)
+- **[x402](https://x402.org)** — uses `PAYMENT-REQUIRED` / `Payment-Signature` headers with the [`exact` scheme on Bitcoin Lightning (`lnbtc`)](https://github.com/x402-foundation/x402/blob/main/specs/schemes/exact/scheme_exact_lnbtc.md); verified locally via preimage
 - **[MPP](https://mpp.dev)** — uses the [lightning charge](https://paymentauth.org/draft-lightning-charge-00) method with `WWW-Authenticate: Payment` / `Authorization: Payment` headers; verified locally via preimage
 
 Unauthenticated requests receive a `402 Payment Required` challenge containing a Lightning invoice. Once the invoice is paid, the client authenticates and the proxy forwards the request to the upstream URL.
@@ -82,15 +82,19 @@ Response: `402 Payment Required` with a JSON body and header:
 PAYMENT-REQUIRED: <encoded payment requirements>
 ```
 
-The JSON body contains the x402 payment requirements including a Lightning invoice in `accepts[0].extra.invoice`.
+The JSON body contains the x402 payment requirements (`scheme: "exact"`, `network: "lnbtc:000000000019d6689c085ae165831e93"`). The Lightning invoice is in `accepts[0].extra.invoice`. Its description hash commits to the exact request (method, full URL, body and `content-type`, using the `http:1` request binding). `payTo` is the public key of the node that signed the invoice.
 
 #### Step 2 — Pay the invoice
 
-Pay the Lightning invoice. The Alby facilitator tracks the payment.
+Pay the Lightning invoice. After payment you receive a **preimage** (32-byte hex string).
 
 #### Step 3 — Make the authenticated request
 
-Retry the request with a `Payment-Signature` header containing the encoded payment proof (as per the x402 spec). The proxy verifies the payment via the Alby facilitator, proxies the request upstream, and returns a `PAYMENT-RESPONSE` header with the settlement result.
+Retry the **same** request (same URL, method, body and `content-type`) with a `Payment-Signature` header containing base64 `{ "x402Version": 2, "accepted": <the accepts entry>, "payload": { "preimage": "<preimage>" } }`. The proxy recomputes the request hash and checks the invoice against it. It checks that `SHA256(preimage) == paymentHash` and confirms via NWC (`lookup_invoice`, so the connection needs that permission as well as `make_invoice`) that the receiving wallet issued the invoice. The payment hash is then marked as used, so each payment works once. The proxy forwards the request upstream and returns a `PAYMENT-RESPONSE` header with the settlement result.
+
+[`fetch402`](https://github.com/getAlby/js-lightning-tools) (v10+) does all of this automatically.
+
+> The replay store is in memory, so it is cleared on restart (the spec requires a durable store). Fine for testing, not for production.
 
 ---
 

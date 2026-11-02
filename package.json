@@ -13,12 +13,14 @@
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",
-    "@getalby/lightning-tools": "^8.1.0",
+    "@getalby/lightning-tools": "^10.0.0",
     "@getalby/sdk": "^7.0.0",
+    "@noble/secp256k1": "^1.7.1",
     "@x402/core": "2.10.0",
     "@x402/extensions": "2.10.0",
     "@x402/fastify": "2.10.0",
-    "fastify": "^5.0.0"
+    "fastify": "^5.0.0",
+    "light-bolt11-decoder": "^3.2.0"
   },
   "resolutions": {
     "@x402/fastify/@x402/core": "2.10.0",

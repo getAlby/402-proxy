@@ -198,15 +198,15 @@
     shell-quote "^1.8.2"
     yargs "^17.7.2"
 
+"@getalby/lightning-tools@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@getalby/lightning-tools/-/lightning-tools-10.0.0.tgz#2c697febe28e208805d4f2b237724434de871937"
+  integrity sha512-SU4KXcASldsy4UUgDf04Qh2zLjFd0oXQUIbfdocVJy13MhzaudyanOVR+CYrRKzBJbSMgpZMdZIMM853gviuPg==
+
 "@getalby/lightning-tools@^6.0.0":
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@getalby/lightning-tools/-/lightning-tools-6.1.0.tgz#558b90a83b961cb6aa760e62de69f5b5ceeb2fe9"
   integrity sha512-rGurar9X4Gm+9xwoNYS8s9YLK7ZYqvbqv4KbHLYV0LEeB0HxZHRgmxblGqg+fYfp6iiYHx+edIgUpt9rS3VwFw==
-
-"@getalby/lightning-tools@^8.1.0":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@getalby/lightning-tools/-/lightning-tools-8.1.0.tgz#8aefcfba90fd43ccf87e6ccf8b426d21149222fe"
-  integrity sha512-P+wM1zNNwiSxA071jl2sNyPq/jfX02OSAEXIre/dL7P4dj0yC3YeyByI1/nKvPNqaFvXzHQn+7D9+Yo85aocRQ==
 
 "@getalby/sdk@^7.0.0":
   version "7.0.0"
@@ -402,10 +402,20 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-2.0.1.tgz#fc1a928061d1232b0a52bb754393c37a5216c89e"
   integrity sha512-XlOlEbQcE9fmuXxrVTXCTlG2nlRXa9Rj3rr5Ue/+tX+nmkgbX720YHh0VR3hBF9xDvwnb8D2shVGOwNx+ulArw==
 
+"@noble/secp256k1@^1.7.1":
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.2.tgz#c2c3343e2dce80e15a914d7442147507f8a98e7f"
+  integrity sha512-/qzwYl5eFLH8OWIecQWM31qld2g1NfjgylK+TNhqtaUKP37Nm+Y+z30Fjhw0Ct8p9yCQEm2N3W/AckdIb3SMcQ==
+
 "@pinojs/redact@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@pinojs/redact/-/redact-0.4.0.tgz#c3de060dd12640dcc838516aa2a6803cc7b2e9d6"
   integrity sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==
+
+"@scure/base@1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.1.tgz#ebb651ee52ff84f420097055f4bf46cfba403938"
+  integrity sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==
 
 "@scure/base@2.0.0":
   version "2.0.0"
@@ -842,6 +852,13 @@ json-schema-traverse@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-1.0.0.tgz#ae7bcb3656ab77a73ba5c49bf654f38e6b6860e2"
   integrity sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==
+
+light-bolt11-decoder@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/light-bolt11-decoder/-/light-bolt11-decoder-3.2.0.tgz#2d48f78386cde526c4131db8f9dfd3250a2d5d4d"
+  integrity sha512-3QEofgiBOP4Ehs9BI+RkZdXZNtSys0nsJ6fyGeSiAGCBsMwHGUDS/JQlY/sTnWs91A2Nh0S9XXfA8Sy9g6QpuQ==
+  dependencies:
+    "@scure/base" "1.1.1"
 
 light-my-request@^6.0.0:
   version "6.6.0"
